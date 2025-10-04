@@ -1,0 +1,204 @@
+# MCP (Modular Component Protocol) Configuration
+# Registry for Alfred's modular components, skills, and integrations
+
+mcp:
+  version: "1.0"
+  enabled: true
+  health_check_interval: 60  # seconds
+  max_concurrent_tasks: 5
+  task_timeout: 300  # seconds
+  enable_auto_recovery: true
+
+# Core Modules Registry
+core_modules:
+  - name: llm_brain
+    path: core.llm_brain
+    class: LLMBrain
+    enabled: true
+    priority: 1
+    dependencies: []
+    
+  - name: vector_memory
+    path: core.vector_memory
+    class: VectorMemory
+    enabled: true
+    priority: 1
+    dependencies: []
+    
+  - name: mcp_orchestrator
+    path: core.mcp_orchestrator
+    class: MCPOrchestrator
+    enabled: true
+    priority: 0
+    dependencies: [llm_brain, vector_memory]
+    
+  - name: event_bus
+    path: core.event_bus
+    class: EventBus
+    enabled: true
+    priority: 1
+    dependencies: []
+    
+  - name: memory_cache
+    path: core.memory_cache
+    class: MemoryCache
+    enabled: true
+    priority: 2
+    dependencies: []
+    
+  - name: diagnostics
+    path: core.diagnostics
+    class: Diagnostics
+    enabled: true
+    priority: 3
+    dependencies: []
+
+# Skills Registry
+skills:
+  - name: example_skill
+    path: modules.skills.example_skill
+    class: ExampleSkill
+    enabled: true
+    priority: 5
+    description: "Example skill for testing"
+    triggers:
+      - "example"
+      - "test skill"
+    dependencies: []
+
+# Integration Modules
+integrations:
+  - name: google_calendar
+    path: modules.integrations.google_calendar
+    class: GoogleCalendarIntegration
+    enabled: false
+    priority: 10
+    description: "Google Calendar integration"
+    dependencies: []
+    config:
+      credentials_path: "./config/google_credentials.json"
+      
+  - name: file_manager
+    path: modules.integrations.file_manager
+    class: FileManager
+    enabled: true
+    priority: 8
+    description: "Automated file management"
+    dependencies: []
+    
+  - name: emotion_detector
+    path: modules.integrations.emotion_detector
+    class: EmotionDetector
+    enabled: false
+    priority: 15
+    description: "OpenCV-based emotion detection"
+    dependencies: []
+
+# Voice Modules
+voice_modules:
+  - name: speech_to_text
+    path: modules.voice.speech_to_text
+    class: SpeechToText
+    enabled: false
+    priority: 5
+    description: "Whisper-based STT"
+    dependencies: []
+    
+  - name: text_to_speech
+    path: modules.voice.text_to_speech
+    class: TextToSpeech
+    enabled: false
+    priority: 5
+    description: "Offline TTS engine"
+    dependencies: []
+    
+  - name: mic_listener
+    path: modules.voice.mic_listener
+    class: MicListener
+    enabled: false
+    priority: 5
+    description: "Hotword-based microphone listener"
+    dependencies: [speech_to_text]
+
+# Vision Modules
+vision_modules:
+  - name: vision_analyzer
+    path: modules.vision.vision_analyzer
+    class: VisionAnalyzer
+    enabled: false
+    priority: 10
+    description: "OpenCV + CLIP vision analysis"
+    dependencies: []
+    
+  - name: object_tracker
+    path: modules.vision.object_tracker
+    class: ObjectTracker
+    enabled: false
+    priority: 10
+    description: "Visual object tracking"
+    dependencies: [vision_analyzer]
+
+# Utilities
+utilities:
+  - name: config_loader
+    path: utils.config_loader
+    class: ConfigLoader
+    enabled: true
+    priority: 0
+    description: "Configuration loader"
+    dependencies: []
+    
+  - name: file_utils
+    path: utils.file_utils
+    enabled: true
+    priority: 5
+    description: "File utility functions"
+    dependencies: []
+    
+  - name: async_utils
+    path: utils.async_utils
+    enabled: true
+    priority: 5
+    description: "Async utility functions"
+    dependencies: []
+    
+  - name: model_utils
+    path: utils.model_utils
+    enabled: true
+    priority: 5
+    description: "Model loading utilities"
+    dependencies: []
+
+# Health Check Configuration
+health_check:
+  enabled: true
+  interval: 60  # seconds
+  timeout: 10  # seconds
+  endpoints:
+    - name: llm_brain
+      check_method: "ping"
+    - name: vector_memory
+      check_method: "ping"
+    - name: event_bus
+      check_method: "status"
+
+# Auto Recovery Configuration
+auto_recovery:
+  enabled: true
+  max_retries: 3
+  retry_delay: 5  # seconds
+  restart_on_failure: true
+  notify_on_recovery: true
+
+# Event Subscriptions
+event_subscriptions:
+  - event: "task_started"
+    subscribers: [diagnostics]
+  - event: "task_completed"
+    subscribers: [diagnostics, memory_cache]
+  - event: "task_failed"
+    subscribers: [diagnostics]
+  - event: "module_loaded"
+    subscribers: [diagnostics]
+  - event: "module_failed"
+    subscribers: [diagnostics]
