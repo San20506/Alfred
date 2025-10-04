@@ -1,0 +1,154 @@
+# Alfred Global Configuration
+# Main configuration file for Alfred AI Assistant
+
+general:
+  name: "Alfred"
+  version: "0.1.0"
+  description: "Your Personal AI Assistant"
+  author: "San20506"
+  data_dir: "./data"
+  config_dir: "./config"
+  modules_dir: "./modules"
+
+# LLM Configuration
+llm:
+  # Default backend: openai, anthropic, local
+  default_backend: "openai"
+  
+  # OpenAI Configuration
+  openai:
+    model: "gpt-4-turbo-preview"
+    temperature: 0.7
+    max_tokens: 2000
+    timeout: 30
+  
+  # Anthropic Configuration
+  anthropic:
+    model: "claude-3-opus-20240229"
+    temperature: 0.7
+    max_tokens: 2000
+    timeout: 30
+  
+  # Local Model Configuration
+  local:
+    model_name: "llama-2-7b"
+    model_path: "./models/llama"
+    device: "cuda"  # cuda or cpu
+    quantization: "8bit"  # Options: none, 8bit, 4bit
+
+# Vector Memory Configuration
+memory:
+  # Vector database type: faiss or chroma
+  vector_db_type: "faiss"
+  vector_db_path: "./data/vector_index.faiss"
+  
+  # Embedding model
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  embedding_dimension: 384
+  
+  # Memory settings
+  max_memory_size: 10000
+  similarity_threshold: 0.7
+  top_k_results: 5
+  
+  # SQLite cache
+  cache_db_path: "./data/memory.db"
+  cache_ttl: 3600  # seconds
+
+# MCP (Modular Component Protocol) Configuration
+mcp:
+  config_path: "./config/mcp_config.yaml"
+  health_check_interval: 60  # seconds
+  max_concurrent_tasks: 5
+  task_timeout: 300  # seconds
+  enable_auto_recovery: true
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  log_path: "./data/logs/alfred.log"
+  max_size: 10485760  # 10MB in bytes
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  enable_console: true
+  enable_file: true
+
+# Voice Configuration (Optional)
+voice:
+  enabled: false
+  
+  # Speech-to-Text
+  stt:
+    model: "whisper-base"
+    device: "cpu"
+    language: "en"
+  
+  # Text-to-Speech
+  tts:
+    engine: "pyttsx3"
+    voice_id: null  # null for default
+    rate: 150
+    volume: 1.0
+  
+  # Hotword Detection
+  hotword:
+    enabled: false
+    keyword: "alfred"
+    sensitivity: 0.5
+
+# Vision Configuration (Optional)
+vision:
+  enabled: false
+  camera_index: 0
+  resolution: [640, 480]
+  fps: 30
+  model_path: "./models/vision"
+
+# Integrations Configuration
+integrations:
+  # Google Calendar
+  google_calendar:
+    enabled: false
+    credentials_path: "./config/google_credentials.json"
+    token_path: "./config/google_token.json"
+  
+  # Slack
+  slack:
+    enabled: false
+    workspace: null
+  
+  # Discord
+  discord:
+    enabled: false
+    guild_id: null
+  
+  # Telegram
+  telegram:
+    enabled: false
+    chat_id: null
+
+# Performance Configuration
+performance:
+  max_workers: 4
+  enable_caching: true
+  cache_ttl: 3600  # seconds
+  request_timeout: 30  # seconds
+  retry_attempts: 3
+  retry_delay: 1  # seconds
+
+# Security Configuration
+security:
+  enable_api_key_validation: true
+  rate_limit:
+    enabled: false
+    max_requests_per_minute: 60
+  allowed_origins:
+    - "localhost"
+    - "127.0.0.1"
+
+# Development Configuration
+development:
+  debug_mode: false
+  auto_reload: false
+  show_stack_trace: true
+  enable_profiling: false
